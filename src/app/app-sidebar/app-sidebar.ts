@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './app-sidebar.html',
   styleUrl: './app-sidebar.css',
 })
-export class AppSidebar {}
+export class AppSidebar {
+  isDark = true;
+
+  toggleTheme() {
+    this.isDark = !this.isDark;
+    document.documentElement.classList.toggle('dark', this.isDark);
+  }
+}

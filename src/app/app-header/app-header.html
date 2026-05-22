@@ -1,17 +1,18 @@
-<header class="bg-dark-mid flex">
+<header class="bg-white dark:bg-dark-mid flex">
   <section
-    class="w-[16rem] shrink-0 border-r border-r-dark-light px-[2rem] py-[1rem] flex items-center"
+    class="w-[16rem] shrink-0 border-r border-r-grey-light dark:border-r-dark-light px-[2rem] py-[1rem] flex items-center"
   >
-    <img src="./images/logo-light.svg" alt="Kanban Logo" />
+    <img src="./images/logo-light.svg" alt="Kanban Logo" class="hidden dark:block" />
+    <img src="./images/logo-dark.svg" alt="Kanban Logo" class="block dark:hidden" />
   </section>
 
   <section
-    class="flex-1 px-[2rem] py-[1rem] flex items-center justify-between text-white border-b border-b-dark-light"
+    class="flex-1 px-[2rem] py-[1rem] flex items-center justify-between text-black dark:text-white border-b border-b-grey-light dark:border-b-dark-light"
   >
-    <h2 class="text-[1.5rem]">Platform Launch</h2>
+    <h2 class="text-[1.5rem] font-[500]">Platform Launch</h2>
 
     <section class="flex items-center gap-[2rem]">
-      <button class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary">
+      <button class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white">
         + Add New Task
       </button>
       <img src="./images/icon-vertical-ellipsis.svg" alt="three dots menu" />

@@ -1,4 +1,6 @@
-<aside class="bg-dark-mid w-full h-full border-r border-r-dark-light flex flex-col justify-between">
+<aside
+  class="bg-white dark:bg-dark-mid w-full h-full border-r border-r-grey-light dark:border-r-dark-light flex flex-col justify-between"
+>
   <section class="pr-[2rem]">
     <p class="pl-[2rem] text-grey text-[.75rem] tracking-[.4em] py-[1rem]">All Boards (3)</p>
 
@@ -27,12 +29,12 @@
 
   <section class="px-[2rem]">
     <section
-      class="flex items-center justify-center gap-[1rem] bg-dark py-[.75rem] rounded-[.325rem]"
+      class="flex items-center justify-center gap-[1rem] bg-grey-lighter dark:bg-dark py-[.75rem] rounded-[.325rem]"
     >
       <img src="/images/icon-light-theme.svg" alt="Light Theme Icon" />
 
       <label class="switch">
-        <input type="checkbox" checked />
+        <input type="checkbox" [checked]="isDark" (change)="toggleTheme()" />
         <span class="slider round"></span>
       </label>
 
