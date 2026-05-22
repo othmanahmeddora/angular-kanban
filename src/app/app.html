@@ -1,11 +1,8 @@
-<main class="h-screen">
-  <section class="h-[7.9%]">
-    <app-header></app-header>
-  </section>
+<main class="h-screen flex flex-col">
+  <app-header></app-header>
 
-  <section class="flex items-start justify-between h-[92.1%]">
-    <section class="flex-1 h-full w-full">
-      <app-sidebar class="flex-1"></app-sidebar>
-    </section>
+  <section class="flex flex-1 overflow-hidden">
+    <app-sidebar></app-sidebar>
+    <app-main class="flex-1 overflow-auto"></app-main>
   </section>
 </main>
