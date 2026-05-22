@@ -1,1 +1,48 @@
-<p>app-sidebar works!</p>
+<aside class="bg-dark-mid w-full h-full border-r border-r-dark-light flex flex-col justify-between">
+  <section class="pr-[2rem]">
+    <p class="pl-[2rem] text-grey text-[.75rem] tracking-[.4em] py-[1rem]">All Boards (3)</p>
+
+    <a
+      href="#"
+      class="flex items-center gap-[1rem] bg-primary rounded-r-full pl-[2rem] py-[.75rem] text-white text-[.9rem] font-[500]"
+      ><img src="/images/icon-board-light.svg" alt="Board icon" /> Platform Launch</a
+    >
+    <a
+      href="#"
+      class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-grey text-[.9rem] font-[500]"
+      ><img src="/images/icon-board.svg" alt="Board icon" /> Marketing Plan</a
+    >
+    <a
+      href="#"
+      class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-grey text-[.9rem] font-[500]"
+      ><img src="/images/icon-board.svg" alt="Board icon" /> Roadmap</a
+    >
+
+    <button
+      class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-primary text-[.9rem] font-[500]"
+    >
+      <img src="/images/icon-board-primary.svg" alt="Board icon" /> + Create New Board
+    </button>
+  </section>
+
+  <section class="px-[2rem]">
+    <section
+      class="flex items-center justify-center gap-[1rem] bg-dark py-[.75rem] rounded-[.325rem]"
+    >
+      <img src="/images/icon-light-theme.svg" alt="Light Theme Icon" />
+
+      <label class="switch">
+        <input type="checkbox" checked />
+        <span class="slider round"></span>
+      </label>
+
+      <img src="/images/icon-dark-theme.svg" alt="Dark Theme Icon" />
+    </section>
+
+    <button
+      class="flex items-center justify-center gap-[.75rem] text-grey font-[500] text-[.9rem] py-[1rem] mb-[2rem]"
+    >
+      <img src="/images/icon-hide-sidebar.svg" alt="Hide Sidebar Icon" /> Hide Sidebar
+    </button>
+  </section>
+</aside>
