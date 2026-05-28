@@ -2,23 +2,23 @@
   class="bg-white dark:bg-dark-mid w-full h-full border-r border-r-grey-light dark:border-r-dark-light flex flex-col justify-between"
 >
   <section class="pr-[2rem]">
-    <p class="pl-[2rem] text-grey text-[.75rem] tracking-[.4em] py-[1rem]">All Boards (3)</p>
+    <p class="pl-[2rem] text-grey text-[.75rem] tracking-[.4em] py-[1rem]">
+      All Boards ({{ boards.length }})
+    </p>
 
-    <a
-      href="#"
-      class="flex items-center gap-[1rem] bg-primary rounded-r-full pl-[2rem] py-[.75rem] text-white text-[.9rem] font-[500]"
-      ><img src="/images/icon-board-light.svg" alt="Board icon" /> Platform Launch</a
-    >
-    <a
-      href="#"
-      class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-grey text-[.9rem] font-[500]"
-      ><img src="/images/icon-board.svg" alt="Board icon" /> Marketing Plan</a
-    >
-    <a
-      href="#"
-      class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-grey text-[.9rem] font-[500]"
-      ><img src="/images/icon-board.svg" alt="Board icon" /> Roadmap</a
-    >
+    @for (board of boards; track board.name; let i = $index) {
+      <button
+        (click)="selectBoard(i)"
+        class="w-full flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-[.9rem] font-[500] rounded-r-full cursor-pointer"
+        [class]="activeIndex === i ? 'bg-primary text-white' : 'text-grey hover:text-primary'"
+      >
+        <img
+          [src]="activeIndex === i ? '/images/icon-board-light.svg' : '/images/icon-board.svg'"
+          alt="Board icon"
+        />
+        {{ board.name }}
+      </button>
+    }
 
     <button
       class="flex items-center gap-[1rem] pl-[2rem] py-[.75rem] text-primary text-[.9rem] font-[500] cursor-pointer"

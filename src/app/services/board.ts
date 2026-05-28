@@ -4,7 +4,7 @@ import data from '../../../data.json';
 @Injectable({
   providedIn: 'root',
 })
-export class Board {
+export class BoardService {
   private boards = data.boards;
 
   getBoards() {
