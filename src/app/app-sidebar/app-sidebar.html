@@ -55,38 +55,43 @@
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
 
-    <!-- Modal -->
     <section
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.3rem] z-20 flex flex-col gap-[1rem]"
     >
-      <h2 class="text-[1.2rem] font-[500]">Add New Board</h2>
+      <h2 class="text-[1.2rem] font-[500] dark:text-white">Add New Board</h2>
 
       <form class="flex flex-col gap-[1rem]">
-        <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        <label
+          for=""
+          class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]"
+        >
           Name
 
           <input
             type="text"
             placeholder="e.g. Web Design"
-            class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
           />
         </label>
 
-        <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        <label
+          for=""
+          class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]"
+        >
           columns
 
           <section class="flex items-center gap-[1rem]">
             <input
               type="text"
               placeholder="e.g. Todo"
-              class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+              class="w-full text-[1rem] border border-slate-200 dark:border-dark-light pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
             />
             <img src="/images/icon-cross.svg" alt="delete column" />
           </section>
         </label>
 
         <button
-          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light text-primary font-[500] cursor-pointer"
+          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
         >
           + Add New Column
         </button>

@@ -25,7 +25,7 @@
       }
 
       <section
-        class="w-[17.5rem] bg-grey-light h-full flex items-center justify-center cursor-pointer"
+        class="w-[17.5rem] bg-grey-light dark:bg-black/15 h-full flex items-center justify-center cursor-pointer"
         (click)="handleColumnFormOpen()"
       >
         <h2 class="text-[1.25rem] text-grey font-[500]">+ New Column</h2>
@@ -45,6 +45,7 @@
     </section>
   }
 
+  <!-- TASK INFO MODAL -->
   @if (selectedTask) {
     <section (click)="closeTask()" class="fixed inset-0 z-10 bg-black/40 cursor-pointer"></section>
 
@@ -64,7 +65,7 @@
       </p>
 
       <section class="flex flex-col gap-[.75rem]">
-        <p class="text-grey text-[.75rem] font-[500]">
+        <p class="text-grey dark:text-white text-[.75rem] font-[500]">
           Subtasks ({{ getCompletedSubtasks(selectedTask.subtasks) }} of
           {{ selectedTask.subtasks.length }})
         </p>
@@ -91,9 +92,9 @@
       </section>
 
       <section class="flex flex-col gap-[.5rem]">
-        <p class="text-grey text-[.75rem] font-[500]">Current Status</p>
+        <p class="text-grey dark:text-white text-[.75rem] font-[500]">Current Status</p>
         <section
-          class="border border-grey-light dark:border-dark-light px-[.75rem] py-[.5rem] rounded-[.25rem] text-black dark:text-white text-[.85rem]"
+          class="border border-slate-200 dark:border-dark-light px-[.75rem] py-[.5rem] rounded-[.25rem] text-black dark:text-white text-[.85rem]"
         >
           {{ selectedTask.status }}
         </section>
@@ -101,6 +102,7 @@
     </section>
   }
 
+  <!-- ADD NEW COLUMN MODAL -->
   @if (isClicked) {
     <section
       (click)="handleColumnFormClose()"
@@ -113,34 +115,34 @@
       <h2 class="text-[1.2rem] font-[500] dark:text-white">Add New Column</h2>
 
       <form class="flex flex-col gap-[1rem]">
-        <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]">
           Name
           <input
             type="text"
             placeholder="e.g. Web Design"
-            class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
           />
         </label>
 
-        <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]">
           Tasks
           <section class="flex items-center gap-[1rem]">
             <input
               type="text"
               placeholder="e.g. Todo"
-              class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+              class="w-full text-[1rem] border border-slate-200 dark:border-dark pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
             />
             <img src="/images/icon-cross.svg" alt="delete column" />
           </section>
         </label>
 
         <button
-          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light text-primary font-[500] cursor-pointer"
+          class="px-[1.3rem] py-[.7rem] rounded-full bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
         >
           + Add New Task
         </button>
         <button
-          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
+          class="px-[1.3rem] py-[.7rem] rounded-full bg-primary text-white font-[500] cursor-pointer"
         >
           Create New Column
         </button>
