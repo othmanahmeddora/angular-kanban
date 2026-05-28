@@ -1,8 +1,7 @@
 <main class="h-screen flex flex-col">
   <app-header></app-header>
-
   <section class="flex flex-1 overflow-hidden">
     <app-sidebar></app-sidebar>
-    <app-main class="flex-1 overflow-auto"></app-main>
+    <router-outlet class="flex-1"></router-outlet>
   </section>
 </main>
