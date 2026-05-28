@@ -50,53 +50,52 @@
   </section>
 
   @if (isClicked) {
-    <section class="absolute">
-      <section
-        (click)="handleBoardFormClose()"
-        class="absolute top-[-4.65rem] left-0 h-screen w-screen z-10 bg-black/40 cursor-pointer"
-      ></section>
+    <section
+      (click)="handleBoardFormClose()"
+      class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
+    ></section>
 
-      <section
-        class="absolute top-[50%] left-[50%] w-[30rem] translate-x-[150%] translate-y-[30%] p-[2rem] bg-white rounded-[.3rem] z-11 flex flex-col gap-[1rem]"
-      >
-        <h2 class="text-[1.2rem] font-[500]">Add New Board</h2>
+    <!-- Modal -->
+    <section
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.3rem] z-20 flex flex-col gap-[1rem]"
+    >
+      <h2 class="text-[1.2rem] font-[500]">Add New Board</h2>
 
-        <form class="flex flex-col gap-[1rem]">
-          <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
-            Name
+      <form class="flex flex-col gap-[1rem]">
+        <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+          Name
 
+          <input
+            type="text"
+            placeholder="e.g. Web Design"
+            class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+          />
+        </label>
+
+        <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+          columns
+
+          <section class="flex items-center gap-[1rem]">
             <input
               type="text"
-              placeholder="e.g. Web Design"
+              placeholder="e.g. Todo"
               class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
             />
-          </label>
+            <img src="/images/icon-cross.svg" alt="delete column" />
+          </section>
+        </label>
 
-          <label for="" class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
-            columns
-
-            <section class="flex items-center gap-[1rem]">
-              <input
-                type="text"
-                placeholder="e.g. Todo"
-                class="w-full text-[1rem] border border-slate-200 pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
-              />
-              <img src="/images/icon-cross.svg" alt="delete column" />
-            </section>
-          </label>
-
-          <button
-            class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light text-primary font-[500] cursor-pointer"
-          >
-            + Add New Column
-          </button>
-          <button
-            class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
-          >
-            Create New Board
-          </button>
-        </form>
-      </section>
+        <button
+          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light text-primary font-[500] cursor-pointer"
+        >
+          + Add New Column
+        </button>
+        <button
+          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
+        >
+          Create New Board
+        </button>
+      </form>
     </section>
   }
 </aside>

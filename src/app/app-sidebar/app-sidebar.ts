@@ -17,6 +17,7 @@ export class AppSidebar {
   handleBoardFormClose() {
     this.isClicked = false;
   }
+
   isDark = true;
 
   toggleTheme() {
