@@ -21,6 +21,10 @@ export class AppMain {
     });
   }
 
+  getCompletedSubtasks(subtasks: { title: string; isCompleted: boolean }[]): number {
+    return subtasks.filter((subtask) => subtask.isCompleted).length;
+  }
+
   isClicked = false;
 
   handleColumnFormOpen() {

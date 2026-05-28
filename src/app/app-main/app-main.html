@@ -1,7 +1,27 @@
-<main class="bg-grey-lighter dark:bg-dark h-full w-full">
+<main class="bg-grey-lighter dark:bg-dark h-full w-full overflow-auto">
   @if (board && board.columns.length > 0) {
-    <section class="p-[2rem]">
-      <h2 class="text-black dark:text-white text-[1.5rem]">{{ board.name }}</h2>
+    <section class="p-[2rem] flex items-start gap-[1.5rem] h-full">
+      @for (column of board.columns; track column.name) {
+        <section class="w-[17.5rem] shrink-0">
+          <h2 class="text-grey text-[.75rem] tracking-[.2em] font-[500] mb-[1.5rem] uppercase">
+            {{ column.name }} ({{ column.tasks.length }})
+          </h2>
+
+          @for (task of column.tasks; track task.title) {
+            <section
+              class="bg-white dark:bg-dark-mid p-[1rem] rounded-[.5rem] mb-[1rem] shadow-sm cursor-pointer"
+            >
+              <h3 class="text-black dark:text-white font-[500] mb-[.5rem]">
+                {{ task.title }}
+              </h3>
+
+              <p class="text-grey text-[.75rem]">
+                {{ getCompletedSubtasks(task.subtasks) }} of {{ task.subtasks.length }} subtasks
+              </p>
+            </section>
+          }
+        </section>
+      }
     </section>
   } @else {
     <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
