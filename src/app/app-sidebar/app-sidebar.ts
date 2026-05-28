@@ -8,6 +8,15 @@ import { Component } from '@angular/core';
   styleUrl: './app-sidebar.css',
 })
 export class AppSidebar {
+  isClicked = false;
+
+  handleBoardFormOpen() {
+    this.isClicked = true;
+  }
+
+  handleBoardFormClose() {
+    this.isClicked = false;
+  }
   isDark = true;
 
   toggleTheme() {
