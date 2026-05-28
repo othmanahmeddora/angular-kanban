@@ -9,6 +9,7 @@
 
           @for (task of column.tasks; track task.title) {
             <section
+              (click)="openTask(task)"
               class="bg-white dark:bg-dark-mid p-[1rem] rounded-[.5rem] mb-[1rem] shadow-sm cursor-pointer"
             >
               <h3 class="text-black dark:text-white font-[500] mb-[.5rem]">
@@ -44,14 +45,68 @@
     </section>
   }
 
+  @if (selectedTask) {
+    <section (click)="closeTask()" class="fixed inset-0 z-10 bg-black/40 cursor-pointer"></section>
+
+    <section
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1.25rem]"
+    >
+      <section class="flex items-center justify-between gap-[1rem]">
+        <h2 class="text-black dark:text-white text-[1.1rem] font-[500]">
+          {{ selectedTask.title }}
+        </h2>
+
+        <img src="/images/icon-vertical-ellipsis.svg" alt="" />
+      </section>
+
+      <p class="text-grey text-[.85rem] leading-relaxed">
+        {{ selectedTask.description }}
+      </p>
+
+      <section class="flex flex-col gap-[.75rem]">
+        <p class="text-grey text-[.75rem] font-[500]">
+          Subtasks ({{ getCompletedSubtasks(selectedTask.subtasks) }} of
+          {{ selectedTask.subtasks.length }})
+        </p>
+
+        @for (subtask of selectedTask.subtasks; track subtask.title) {
+          <section
+            (click)="toggleSubtask(subtask)"
+            class="flex items-center gap-[1rem] bg-grey-lighter dark:bg-dark p-[.75rem] rounded-[.25rem]"
+          >
+            <input
+              type="checkbox"
+              [checked]="subtask.isCompleted"
+              class="accent-primary w-[1rem] h-[1rem] cursor-pointer"
+            />
+            <p
+              class="text-black dark:text-white text-[.8rem] font-[500]"
+              [class.line-through]="subtask.isCompleted"
+              [class.opacity-50]="subtask.isCompleted"
+            >
+              {{ subtask.title }}
+            </p>
+          </section>
+        }
+      </section>
+
+      <section class="flex flex-col gap-[.5rem]">
+        <p class="text-grey text-[.75rem] font-[500]">Current Status</p>
+        <section
+          class="border border-grey-light dark:border-dark-light px-[.75rem] py-[.5rem] rounded-[.25rem] text-black dark:text-white text-[.85rem]"
+        >
+          {{ selectedTask.status }}
+        </section>
+      </section>
+    </section>
+  }
+
   @if (isClicked) {
-    <!-- Overlay -->
     <section
       (click)="handleColumnFormClose()"
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
 
-    <!-- Modal -->
     <section
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.3rem] z-20 flex flex-col gap-[1rem]"
     >
