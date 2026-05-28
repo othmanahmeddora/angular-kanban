@@ -22,6 +22,13 @@
           }
         </section>
       }
+
+      <section
+        class="w-[17.5rem] bg-grey-light h-full flex items-center justify-center cursor-pointer"
+        (click)="handleColumnFormOpen()"
+      >
+        <h2 class="text-[1.25rem] text-grey font-[500]">+ New Column</h2>
+      </section>
     </section>
   } @else {
     <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
