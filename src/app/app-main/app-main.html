@@ -1,14 +1,21 @@
 <main class="bg-grey-lighter dark:bg-dark h-full w-full">
-  <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
-    <p class="text-[1.25rem] text-grey">This board is empty. Create a new column to get started.</p>
-
-    <button
-      (click)="handleColumnFormOpen()"
-      class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white cursor-pointer"
-    >
-      + Add New Column
-    </button>
-  </section>
+  @if (board && board.columns.length > 0) {
+    <section class="p-[2rem]">
+      <h2 class="text-black dark:text-white text-[1.5rem]">{{ board.name }}</h2>
+    </section>
+  } @else {
+    <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
+      <p class="text-[1.25rem] text-grey">
+        This board is empty. Create a new column to get started.
+      </p>
+      <button
+        (click)="handleColumnFormOpen()"
+        class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white cursor-pointer"
+      >
+        + Add New Column
+      </button>
+    </section>
+  }
 
   @if (isClicked) {
     <!-- Overlay -->

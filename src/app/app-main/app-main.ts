@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BoardService } from '../services/board';
 
 @Component({
   selector: 'app-main',
@@ -8,6 +10,17 @@ import { Component } from '@angular/core';
   styleUrl: './app-main.css',
 })
 export class AppMain {
+  private route = inject(ActivatedRoute);
+  private boardService = inject(BoardService);
+  board: any = null;
+
+  ngOnInit() {
+    this.route.params.subscribe((param) => {
+      const index = Number(param['index']);
+      this.board = this.boardService.getBoardByIndex(index);
+    });
+  }
+
   isClicked = false;
 
   handleColumnFormOpen() {
