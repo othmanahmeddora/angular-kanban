@@ -56,51 +56,55 @@
     ></section>
 
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.3rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      (click)="$event.stopPropagation()"
     >
-      <h2 class="text-[1.2rem] font-[500] dark:text-white">Add New Board</h2>
+      <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Add New Board</h2>
 
-      <form class="flex flex-col gap-[1rem]">
-        <label
-          for=""
-          class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]"
-        >
-          Name
+      <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        Name
+        <input
+          type="text"
+          placeholder="e.g. Web Design"
+          [(ngModel)]="newBoardName"
+          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+        />
+      </label>
 
-          <input
-            type="text"
-            placeholder="e.g. Web Design"
-            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
-          />
-        </label>
+      <section class="flex flex-col gap-[.5rem]">
+        <p class="text-[.8rem] text-grey font-[500]">Columns</p>
 
-        <label
-          for=""
-          class="flex flex-col gap-[.5rem] text-[.8rem] text-grey dark:text-white font-[500]"
-        >
-          columns
-
+        @for (col of newBoardColumns; track $index; let i = $index) {
           <section class="flex items-center gap-[1rem]">
             <input
               type="text"
               placeholder="e.g. Todo"
-              class="w-full text-[1rem] border border-slate-200 dark:border-dark-light pl-[.5rem] py-[.5rem] rounded-[.2rem] font-[400]"
+              [(ngModel)]="newBoardColumns[i]"
+              class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
             />
-            <img src="/images/icon-cross.svg" alt="delete column" />
+            <img
+              src="/images/icon-cross.svg"
+              alt="remove"
+              class="cursor-pointer"
+              (click)="removeColumn(i)"
+            />
           </section>
-        </label>
+        }
+      </section>
 
-        <button
-          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
-        >
-          + Add New Column
-        </button>
-        <button
-          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
-        >
-          Create New Board
-        </button>
-      </form>
+      <button
+        (click)="addColumn()"
+        class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
+      >
+        + Add New Column
+      </button>
+
+      <button
+        (click)="submitBoard()"
+        class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
+      >
+        Create New Board
+      </button>
     </section>
   }
 </aside>

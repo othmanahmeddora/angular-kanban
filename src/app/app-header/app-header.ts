@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { BoardService } from '../services/board';
 
 @Component({
   selector: 'app-header',
@@ -8,13 +9,5 @@ import { Component } from '@angular/core';
   styleUrl: './app-header.css',
 })
 export class AppHeader {
-  isClicked = false;
-
-  handleTaskFormOpen() {
-    this.isClicked = true;
-  }
-
-  handleTaskFormClose() {
-    this.isClicked = false;
-  }
+  boardService = inject(BoardService);
 }
