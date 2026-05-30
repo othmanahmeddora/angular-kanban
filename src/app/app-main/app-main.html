@@ -1,12 +1,26 @@
 <main class="bg-grey-lighter dark:bg-dark h-full w-full overflow-auto">
-  @if (board && board.columns.length > 0) {
+  @if (!board && boardService.getBoards().length === 0) {
+    <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
+      <p class="text-[1.25rem] text-grey">
+        No boards yet. Create one in the sidebar to get started.
+      </p>
+    </section>
+  } @else if (board && board.columns.length > 0) {
     <section class="p-[2rem] flex items-start gap-[1.5rem] h-full">
       @for (column of board.columns; track column.name) {
         <section class="w-[17.5rem] shrink-0">
-          <h2 class="text-grey text-[.75rem] tracking-[.4em] mb-[1.5rem] uppercase">
+          <!-- Column Header -->
+          <h2
+            class="text-grey text-[.75rem] tracking-[.4em] mb-[1.5rem] uppercase flex items-center gap-[.75rem]"
+          >
+            <span
+              class="w-[.85rem] h-[.85rem] rounded-full shrink-0"
+              [style.background-color]="column.color"
+            ></span>
             {{ column.name }} ({{ column.tasks.length }})
           </h2>
 
+          <!-- Drop List -->
           <section
             cdkDropList
             [id]="column.name"
@@ -27,19 +41,23 @@
                 <p class="text-grey text-[.75rem]">
                   {{ task.subtasks | completedSubtasks }} of {{ task.subtasks.length }} subtasks
                 </p>
-
-                <!-- drag placeholder -->
                 <section
                   *cdkDragPlaceholder
                   class="bg-primary/20 rounded-[.5rem] h-[5rem] mb-[1rem]"
                 ></section>
+              </section>
+            } @empty {
+              <section
+                class="flex items-center justify-center h-[5rem] border-2 border-dashed border-grey-light dark:border-dark-light rounded-[.5rem]"
+              >
+                <p class="text-grey text-[.8rem]">No tasks</p>
               </section>
             }
           </section>
         </section>
       }
 
-      <!-- Add New Column button -->
+      <!-- Add New Column -->
       <section
         (click)="handleColumnFormOpen()"
         class="w-[17.5rem] shrink-0 mt-[2.5rem] flex items-center justify-center bg-grey-light/50 dark:bg-dark-light/20 rounded-[.5rem] h-[80vh] cursor-pointer group"
@@ -61,13 +79,14 @@
     </section>
   }
 
-  <!-- Task Modal -->
+  <!-- ==================== TASK VIEW MODAL ==================== -->
   @if (selectedTask) {
     <section (click)="closeTask()" class="fixed inset-0 z-10 bg-black/40 cursor-pointer"></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1.25rem]"
       (click)="$event.stopPropagation()"
     >
+      <!-- Title + menu -->
       <section class="flex items-center justify-between gap-[1rem]">
         <h2 class="text-black dark:text-white text-[1.1rem] font-[500]">
           {{ selectedTask.title }}
@@ -80,7 +99,6 @@
             class="cursor-pointer"
             (click)="$event.stopPropagation(); isTaskMenuOpen = !isTaskMenuOpen"
           />
-
           @if (isTaskMenuOpen) {
             <section
               class="absolute top-[2rem] right-[-5rem] flex flex-col items-start gap-[1rem] bg-white dark:bg-dark-mid w-[10rem] p-[1rem] rounded-[.5rem] shadow-sm z-10"
@@ -104,10 +122,12 @@
         </section>
       </section>
 
+      <!-- Description -->
       @if (selectedTask.description) {
         <p class="text-grey text-[.85rem] leading-relaxed">{{ selectedTask.description }}</p>
       }
 
+      <!-- Subtasks -->
       <section class="flex flex-col gap-[.75rem]">
         <p class="text-grey text-[.75rem] font-[500]">
           Subtasks ({{ selectedTask.subtasks | completedSubtasks }} of
@@ -134,6 +154,7 @@
         }
       </section>
 
+      <!-- Status -->
       <section class="flex flex-col gap-[.5rem]">
         <p class="text-grey text-[.75rem] font-[500]">Current Status</p>
         <section
@@ -145,7 +166,7 @@
     </section>
   }
 
-  <!-- Add Column Modal -->
+  <!-- ==================== ADD COLUMN MODAL ==================== -->
   @if (isColumnFormOpen) {
     <section
       (click)="handleColumnFormClose()"
@@ -163,8 +184,16 @@
           type="text"
           placeholder="e.g. Review"
           [(ngModel)]="newColumnName"
-          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+          class="w-full text-[1rem] border px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none dark:bg-dark-mid dark:text-white"
+          [class]="
+            isColumnFormSubmitted && !newColumnName.trim()
+              ? 'border-red'
+              : 'border-slate-200 dark:border-dark-light focus:border-primary'
+          "
         />
+        @if (isColumnFormSubmitted && !newColumnName.trim()) {
+          <p class="text-red text-[.75rem]">Column name is required</p>
+        }
       </label>
 
       <button
@@ -177,7 +206,7 @@
     </section>
   }
 
-  <!-- Add Task Modal -->
+  <!-- ==================== ADD TASK MODAL ==================== -->
   @if (boardService.isTaskFormOpen()) {
     <section
       (click)="handleTaskFormClose()"
@@ -195,8 +224,16 @@
           type="text"
           placeholder="e.g. Take coffee break"
           [(ngModel)]="newTaskTitle"
-          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+          class="w-full text-[1rem] border px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none dark:bg-dark-mid dark:text-white"
+          [class]="
+            isTaskFormSubmitted && !newTaskTitle.trim()
+              ? 'border-red'
+              : 'border-slate-200 dark:border-dark-light focus:border-primary'
+          "
         />
+        @if (isTaskFormSubmitted && !newTaskTitle.trim()) {
+          <p class="text-red text-[.75rem]">Title is required</p>
+        }
       </label>
 
       <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
@@ -228,6 +265,7 @@
           </section>
         }
         <button
+          type="button"
           (click)="addSubtaskField()"
           class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
         >
@@ -248,6 +286,7 @@
       </section>
 
       <button
+        type="button"
         (click)="submitTask()"
         class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
       >
@@ -256,7 +295,7 @@
     </section>
   }
 
-  <!-- EDIT TASK MODAL -->
+  <!-- ==================== EDIT TASK MODAL ==================== -->
   @if (boardService.isEditTaskOpen()) {
     <section
       (click)="boardService.closeEditTask()"
@@ -273,8 +312,16 @@
         <input
           type="text"
           [(ngModel)]="editTaskTitle"
-          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+          class="w-full text-[1rem] border px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none dark:bg-dark-mid dark:text-white"
+          [class]="
+            isEditTaskFormSubmitted && !editTaskTitle.trim()
+              ? 'border-red'
+              : 'border-slate-200 dark:border-dark-light focus:border-primary'
+          "
         />
+        @if (isEditTaskFormSubmitted && !editTaskTitle.trim()) {
+          <p class="text-red text-[.75rem]">Title is required</p>
+        }
       </label>
 
       <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
@@ -334,7 +381,7 @@
     </section>
   }
 
-  <!-- DELETE TASK MODAL -->
+  <!-- ==================== DELETE TASK MODAL ==================== -->
   @if (boardService.isDeleteTaskOpen()) {
     <section
       (click)="boardService.closeDeleteTask()"

@@ -68,8 +68,16 @@
           type="text"
           placeholder="e.g. Web Design"
           [(ngModel)]="newBoardName"
-          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+          class="w-full text-[1rem] border px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none"
+          [class]="
+            isBoardFormSubmitted && !newBoardName.trim()
+              ? 'border-red'
+              : 'border-slate-200 dark:border-dark-light focus:border-primary'
+          "
         />
+        @if (isBoardFormSubmitted && !newBoardName.trim()) {
+          <p class="text-red text-[.75rem]">Board name is required</p>
+        }
       </label>
 
       <section class="flex flex-col gap-[.5rem]">

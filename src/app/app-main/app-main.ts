@@ -34,11 +34,24 @@ export class AppMain implements OnInit {
   newTaskStatus = '';
   newTaskSubtasks: string[] = [''];
 
+  isColumnFormSubmitted = false;
+  isTaskFormSubmitted = false;
+  isEditTaskFormSubmitted = false;
+
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.boardIndex = Number(params['index']);
-      this.board = this.boardService.getBoardByIndex(this.boardIndex);
-      this.newTaskStatus = this.board?.columns[0]?.name ?? '';
+      if (params['index'] !== undefined) {
+        this.boardIndex = Number(params['index']);
+        this.board = this.boardService.getBoardByIndex(this.boardIndex) ?? null;
+        this.newTaskStatus = this.board?.columns[0]?.name ?? '';
+      } else {
+        const boards = this.boardService.getBoards();
+        if (boards.length > 0) {
+          this.boardIndex = 0;
+          this.board = this.boardService.getBoardByIndex(0);
+          this.newTaskStatus = this.board?.columns[0]?.name ?? '';
+        }
+      }
     });
   }
 
@@ -58,9 +71,11 @@ export class AppMain implements OnInit {
   }
 
   submitColumn() {
+    this.isColumnFormSubmitted = true;
     if (!this.newColumnName.trim()) return;
     this.boardService.addColumn(this.boardIndex, this.newColumnName.trim());
     this.board = this.boardService.getBoardByIndex(this.boardIndex);
+    this.isColumnFormSubmitted = false;
     this.handleColumnFormClose();
   }
 
@@ -80,6 +95,7 @@ export class AppMain implements OnInit {
   }
 
   submitTask() {
+    this.isTaskFormSubmitted = true;
     if (!this.newTaskTitle.trim()) return;
     const task = {
       title: this.newTaskTitle.trim(),
@@ -91,6 +107,7 @@ export class AppMain implements OnInit {
     };
     this.boardService.addTask(this.boardIndex, this.newTaskStatus, task);
     this.board = this.boardService.getBoardByIndex(this.boardIndex);
+    this.isTaskFormSubmitted = false;
     this.handleTaskFormClose();
   }
 
@@ -125,6 +142,7 @@ export class AppMain implements OnInit {
   }
 
   submitEditTask() {
+    this.isEditTaskFormSubmitted = true;
     if (!this.editTaskTitle.trim()) return;
     const updated = {
       title: this.editTaskTitle.trim(),
@@ -132,14 +150,27 @@ export class AppMain implements OnInit {
       status: this.editTaskStatus,
       subtasks: this.editTaskSubtasks.filter((s) => s.title.trim()),
     };
-    this.boardService.editTask(
-      this.boardIndex,
-      this.selectedTaskColumn,
-      this.selectedTaskIndex,
-      updated,
-    );
+
+    if (this.editTaskStatus !== this.selectedTaskColumn) {
+      this.boardService.deleteTask(
+        this.boardIndex,
+        this.selectedTaskColumn,
+        this.selectedTaskIndex,
+      );
+      this.boardService.addTask(this.boardIndex, this.editTaskStatus, updated);
+    } else {
+      this.boardService.editTask(
+        this.boardIndex,
+        this.selectedTaskColumn,
+        this.selectedTaskIndex,
+        updated,
+      );
+    }
+
     this.board = this.boardService.getBoardByIndex(this.boardIndex);
     this.selectedTask = updated;
+    this.selectedTaskColumn = this.editTaskStatus;
+    this.isEditTaskFormSubmitted = false;
     this.boardService.closeEditTask();
   }
 

@@ -58,6 +58,13 @@ export class AppHeader {
   confirmDeleteBoard() {
     this.boardService.deleteBoard(this.boardIndex);
     this.boardService.closeDeleteBoard();
-    this.router.navigate(['/board/0']);
+
+    const remaining = this.boardService.getBoards().length;
+    if (remaining === 0) {
+      this.router.navigate(['/']);
+    } else {
+      const newIndex = Math.min(this.boardIndex, remaining - 1);
+      this.router.navigate(['/board', newIndex]);
+    }
   }
 }
