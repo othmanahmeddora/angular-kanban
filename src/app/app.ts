@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { AppHeader } from './app-header/app-header';
 import { AppSidebar } from './app-sidebar/app-sidebar';
-import { RouterOutlet } from '@angular/router';
+import { BoardService } from './services/board';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,14 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('my-first-angular-app');
+  private boardService = inject(BoardService);
+
+  activeBoardIndex = 0;
+  get activeBoardName() {
+    return this.boardService.getBoardByIndex(this.activeBoardIndex)?.name ?? '';
+  }
+
+  onBoardSelected(index: number) {
+    this.activeBoardIndex = index;
+  }
 }

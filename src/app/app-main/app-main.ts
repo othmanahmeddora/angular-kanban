@@ -35,9 +35,6 @@ export class AppMain implements OnInit {
     });
   }
 
-  openTask(task: any) {
-    this.selectedTask = task;
-  }
   closeTask() {
     this.selectedTask = null;
   }
@@ -88,5 +85,61 @@ export class AppMain implements OnInit {
     this.boardService.addTask(this.boardIndex, this.newTaskStatus, task);
     this.board = this.boardService.getBoardByIndex(this.boardIndex);
     this.handleTaskFormClose();
+  }
+
+  selectedTaskIndex = -1;
+  selectedTaskColumn = '';
+  isTaskMenuOpen = false;
+
+  editTaskTitle = '';
+  editTaskDescription = '';
+  editTaskStatus = '';
+  editTaskSubtasks: { title: string; isCompleted: boolean }[] = [];
+
+  openTask(task: any, columnName: string, taskIndex: number) {
+    this.selectedTask = task;
+    this.selectedTaskIndex = taskIndex;
+    this.selectedTaskColumn = columnName;
+  }
+
+  openEditTask() {
+    this.editTaskTitle = this.selectedTask.title;
+    this.editTaskDescription = this.selectedTask.description;
+    this.editTaskStatus = this.selectedTask.status;
+    this.editTaskSubtasks = [...this.selectedTask.subtasks.map((s: any) => ({ ...s }))];
+    this.boardService.openEditTask();
+  }
+
+  addEditSubtask() {
+    this.editTaskSubtasks.push({ title: '', isCompleted: false });
+  }
+  removeEditSubtask(i: number) {
+    this.editTaskSubtasks.splice(i, 1);
+  }
+
+  submitEditTask() {
+    if (!this.editTaskTitle.trim()) return;
+    const updated = {
+      title: this.editTaskTitle.trim(),
+      description: this.editTaskDescription.trim(),
+      status: this.editTaskStatus,
+      subtasks: this.editTaskSubtasks.filter((s) => s.title.trim()),
+    };
+    this.boardService.editTask(
+      this.boardIndex,
+      this.selectedTaskColumn,
+      this.selectedTaskIndex,
+      updated,
+    );
+    this.board = this.boardService.getBoardByIndex(this.boardIndex);
+    this.selectedTask = updated;
+    this.boardService.closeEditTask();
+  }
+
+  confirmDeleteTask() {
+    this.boardService.deleteTask(this.boardIndex, this.selectedTaskColumn, this.selectedTaskIndex);
+    this.board = this.boardService.getBoardByIndex(this.boardIndex);
+    this.boardService.closeDeleteTask();
+    this.closeTask();
   }
 }

@@ -9,7 +9,7 @@
   <section
     class="flex-1 px-[2rem] py-[1rem] flex items-center justify-between text-black dark:text-white border-b border-b-grey-light dark:border-b-dark-light"
   >
-    <h2 class="text-[1.5rem] font-[500]">Platform Launch</h2>
+    <h2 class="text-[1.5rem] font-[500]">{{ boardName }}</h2>
 
     <section class="flex items-center gap-[2rem]">
       <button
@@ -19,7 +19,124 @@
       >
         + Add New Task
       </button>
-      <img src="./images/icon-vertical-ellipsis.svg" alt="three dots menu" />
+
+      <section class="relative">
+        <img
+          src="./images/icon-vertical-ellipsis.svg"
+          alt="three dots menu"
+          class="cursor-pointer"
+          (click)="isMenuOpen = !isMenuOpen"
+        />
+
+        @if (isMenuOpen) {
+          <section
+            class="absolute top-[2rem] right-0 flex flex-col items-start gap-[1rem] bg-white dark:bg-dark-mid w-[10rem] p-[1rem] rounded-[.5rem] shadow-md z-10"
+          >
+            <button
+              type="button"
+              (click)="openEditBoard()"
+              class="text-grey cursor-pointer hover:text-primary"
+            >
+              Edit Board
+            </button>
+            <button type="button" (click)="openDeleteBoard()" class="text-red cursor-pointer">
+              Delete Board
+            </button>
+          </section>
+        }
+      </section>
     </section>
   </section>
 </header>
+
+<!-- EDIT BOARD MODAL -->
+@if (boardService.isEditBoardOpen()) {
+  <section
+    (click)="boardService.closeEditBoard()"
+    class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
+  ></section>
+  <section
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+    (click)="$event.stopPropagation()"
+  >
+    <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Edit Board</h2>
+
+    <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+      Name
+      <input
+        type="text"
+        [(ngModel)]="editBoardName"
+        class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+      />
+    </label>
+
+    <section class="flex flex-col gap-[.5rem]">
+      <p class="text-[.8rem] text-grey font-[500]">Columns</p>
+      @for (col of editBoardColumns; track $index; let i = $index) {
+        <section class="flex items-center gap-[1rem]">
+          <input
+            type="text"
+            [(ngModel)]="editBoardColumns[i]"
+            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+          />
+          <img
+            src="/images/icon-cross.svg"
+            alt="remove"
+            class="cursor-pointer"
+            (click)="removeEditColumn(i)"
+          />
+        </section>
+      }
+    </section>
+
+    <button
+      type="button"
+      (click)="addEditColumn()"
+      class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
+    >
+      + Add New Column
+    </button>
+
+    <button
+      type="button"
+      (click)="submitEditBoard()"
+      class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
+    >
+      Save Changes
+    </button>
+  </section>
+}
+
+<!-- DELETE BOARD MODAL -->
+@if (boardService.isDeleteBoardOpen()) {
+  <section
+    (click)="boardService.closeDeleteBoard()"
+    class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
+  ></section>
+  <section
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+    (click)="$event.stopPropagation()"
+  >
+    <h2 class="text-[1.2rem] font-[600] text-red">Delete this board?</h2>
+    <p class="text-grey text-[.85rem] leading-relaxed">
+      Are you sure you want to delete the '{{ boardName }}' board? This action will remove all
+      columns and tasks and cannot be reversed.
+    </p>
+    <section class="flex gap-[1rem]">
+      <button
+        type="button"
+        (click)="confirmDeleteBoard()"
+        class="flex-1 px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-red text-white font-[500] cursor-pointer"
+      >
+        Delete
+      </button>
+      <button
+        type="button"
+        (click)="boardService.closeDeleteBoard()"
+        class="flex-1 px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
+      >
+        Cancel
+      </button>
+    </section>
+  </section>
+}

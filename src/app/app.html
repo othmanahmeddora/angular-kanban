@@ -1,7 +1,7 @@
 <main class="h-screen flex flex-col">
-  <app-header></app-header>
+  <app-header [boardIndex]="activeBoardIndex" [boardName]="activeBoardName"></app-header>
   <section class="flex flex-1 overflow-hidden">
-    <app-sidebar></app-sidebar>
+    <app-sidebar (boardSelected)="onBoardSelected($event)"></app-sidebar>
     <router-outlet></router-outlet>
   </section>
 </main>

@@ -71,4 +71,72 @@ export class BoardService {
   closeTaskForm() {
     this.isTaskFormOpen.set(false);
   }
+
+  editBoard(boardIndex: number, name: string, columns: { name: string }[]) {
+    this._boards.update((boards) => {
+      const board = boards[boardIndex];
+      board.name = name;
+
+      board.columns = columns.map((col) => {
+        const existing = board.columns.find((c: any) => c.name === col.name);
+        return existing ?? { name: col.name, tasks: [] };
+      });
+
+      return [...boards];
+    });
+    this.save();
+  }
+
+  deleteBoard(boardIndex: number) {
+    this._boards.update((boards) => boards.filter((_, i) => i !== boardIndex));
+    this.save();
+  }
+
+  editTask(boardIndex: number, columnName: string, taskIndex: number, updatedTask: any) {
+    this._boards.update((boards) => {
+      const column = boards[boardIndex].columns.find((c: any) => c.name === columnName);
+      if (column) column.tasks[taskIndex] = updatedTask;
+      return [...boards];
+    });
+    this.save();
+  }
+
+  deleteTask(boardIndex: number, columnName: string, taskIndex: number) {
+    this._boards.update((boards) => {
+      const column = boards[boardIndex].columns.find((c: any) => c.name === columnName);
+      if (column) column.tasks.splice(taskIndex, 1);
+      return [...boards];
+    });
+    this.save();
+  }
+
+  isEditBoardOpen = signal(false);
+  isDeleteBoardOpen = signal(false);
+  isEditTaskOpen = signal(false);
+  isDeleteTaskOpen = signal(false);
+
+  openEditBoard() {
+    this.isEditBoardOpen.set(true);
+  }
+  closeEditBoard() {
+    this.isEditBoardOpen.set(false);
+  }
+  openDeleteBoard() {
+    this.isDeleteBoardOpen.set(true);
+  }
+  closeDeleteBoard() {
+    this.isDeleteBoardOpen.set(false);
+  }
+  openEditTask() {
+    this.isEditTaskOpen.set(true);
+  }
+  closeEditTask() {
+    this.isEditTaskOpen.set(false);
+  }
+  openDeleteTask() {
+    this.isDeleteTaskOpen.set(true);
+  }
+  closeDeleteTask() {
+    this.isDeleteTaskOpen.set(false);
+  }
 }

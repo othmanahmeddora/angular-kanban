@@ -7,9 +7,9 @@
             {{ column.name }} ({{ column.tasks.length }})
           </h2>
 
-          @for (task of column.tasks; track task.title) {
+          @for (task of column.tasks; track task.title; let i = $index) {
             <section
-              (click)="openTask(task)"
+              (click)="openTask(task, column.name, i)"
               class="bg-white dark:bg-dark-mid p-[1.5rem] rounded-[.5rem] mb-[1rem] shadow-sm cursor-pointer"
             >
               <h3 class="text-black dark:text-white text-[.9rem] font-[500] mb-[.5rem]">
@@ -52,7 +52,41 @@
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1.25rem]"
       (click)="$event.stopPropagation()"
     >
-      <h2 class="text-black dark:text-white text-[1.1rem] font-[500]">{{ selectedTask.title }}</h2>
+      <section class="flex items-center justify-between gap-[1rem]">
+        <h2 class="text-black dark:text-white text-[1.1rem] font-[500]">
+          {{ selectedTask.title }}
+        </h2>
+
+        <section class="relative">
+          <img
+            src="./images/icon-vertical-ellipsis.svg"
+            alt="three dots menu"
+            class="cursor-pointer"
+            (click)="$event.stopPropagation(); isTaskMenuOpen = !isTaskMenuOpen"
+          />
+
+          @if (isTaskMenuOpen) {
+            <section
+              class="absolute top-[2rem] right-[-5rem] flex flex-col items-start gap-[1rem] bg-white dark:bg-dark-mid w-[10rem] p-[1rem] rounded-[.5rem] shadow-sm z-10"
+            >
+              <button
+                type="button"
+                (click)="openEditTask(); isTaskMenuOpen = false"
+                class="text-grey cursor-pointer hover:text-primary"
+              >
+                Edit Task
+              </button>
+              <button
+                type="button"
+                (click)="boardService.openDeleteTask(); isTaskMenuOpen = false"
+                class="text-red cursor-pointer"
+              >
+                Delete Task
+              </button>
+            </section>
+          }
+        </section>
+      </section>
 
       @if (selectedTask.description) {
         <p class="text-grey text-[.85rem] leading-relaxed">{{ selectedTask.description }}</p>
@@ -203,6 +237,118 @@
       >
         Create Task
       </button>
+    </section>
+  }
+
+  <!-- EDIT TASK MODAL -->
+  @if (boardService.isEditTaskOpen()) {
+    <section
+      (click)="boardService.closeEditTask()"
+      class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
+    ></section>
+    <section
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Edit Task</h2>
+
+      <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        Title
+        <input
+          type="text"
+          [(ngModel)]="editTaskTitle"
+          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+        />
+      </label>
+
+      <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
+        Description
+        <textarea
+          [(ngModel)]="editTaskDescription"
+          rows="3"
+          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary resize-none"
+        ></textarea>
+      </label>
+
+      <section class="flex flex-col gap-[.5rem]">
+        <p class="text-[.8rem] text-grey font-[500]">Subtasks</p>
+        @for (subtask of editTaskSubtasks; track $index; let i = $index) {
+          <section class="flex items-center gap-[1rem]">
+            <input
+              type="text"
+              [(ngModel)]="editTaskSubtasks[i].title"
+              class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+            />
+            <img
+              src="/images/icon-cross.svg"
+              alt="remove"
+              class="cursor-pointer"
+              (click)="removeEditSubtask(i)"
+            />
+          </section>
+        }
+        <button
+          type="button"
+          (click)="addEditSubtask()"
+          class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
+        >
+          + Add New Subtask
+        </button>
+      </section>
+
+      <section class="flex flex-col gap-[.5rem]">
+        <p class="text-[.8rem] text-grey font-[500]">Status</p>
+        <select
+          [(ngModel)]="editTaskStatus"
+          class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+        >
+          @for (column of board.columns; track column.name) {
+            <option [value]="column.name">{{ column.name }}</option>
+          }
+        </select>
+      </section>
+
+      <button
+        type="button"
+        (click)="submitEditTask()"
+        class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white font-[500] cursor-pointer"
+      >
+        Save Changes
+      </button>
+    </section>
+  }
+
+  <!-- DELETE TASK MODAL -->
+  @if (boardService.isDeleteTaskOpen()) {
+    <section
+      (click)="boardService.closeDeleteTask()"
+      class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
+    ></section>
+    <section
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 class="text-[1.2rem] font-[600] text-red">Delete this task?</h2>
+      <p class="text-grey text-[.85rem] leading-relaxed">
+        Are you sure you want to delete the '{{ selectedTask?.title }}' task? This action cannot be
+        reversed.
+      </p>
+      <section class="flex gap-[1rem]">
+        <button
+          type="button"
+          (click)="confirmDeleteTask()"
+          class="flex-1 px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-red text-white font-[500] cursor-pointer"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          (click)="boardService.closeDeleteTask()"
+          class="flex-1 px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-grey-light dark:bg-white text-primary font-[500] cursor-pointer"
+        >
+          Cancel
+        </button>
+      </section>
     </section>
   }
 </main>

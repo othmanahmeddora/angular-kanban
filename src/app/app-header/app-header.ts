@@ -1,13 +1,57 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { BoardService } from '../services/board';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   host: { class: 'block' },
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './app-header.html',
   styleUrl: './app-header.css',
 })
 export class AppHeader {
   boardService = inject(BoardService);
+  private router = inject(Router);
+
+  @Input() boardIndex = 0;
+  @Input() boardName = '';
+
+  isMenuOpen = false;
+
+  editBoardName = '';
+  editBoardColumns: string[] = [];
+
+  openEditBoard() {
+    const board = this.boardService.getBoardByIndex(this.boardIndex);
+    this.editBoardName = board.name;
+    this.editBoardColumns = board.columns.map((c: any) => c.name);
+    this.isMenuOpen = false;
+    this.boardService.openEditBoard();
+  }
+
+  openDeleteBoard() {
+    this.isMenuOpen = false;
+    this.boardService.openDeleteBoard();
+  }
+
+  addEditColumn() {
+    this.editBoardColumns.push('');
+  }
+  removeEditColumn(i: number) {
+    this.editBoardColumns.splice(i, 1);
+  }
+
+  submitEditBoard() {
+    if (!this.editBoardName.trim()) return;
+    const columns = this.editBoardColumns.filter((c) => c.trim()).map((c) => ({ name: c.trim() }));
+    this.boardService.editBoard(this.boardIndex, this.editBoardName.trim(), columns);
+    this.boardService.closeEditBoard();
+  }
+
+  confirmDeleteBoard() {
+    this.boardService.deleteBoard(this.boardIndex);
+    this.boardService.closeDeleteBoard();
+    this.router.navigate(['/board/0']);
+  }
 }

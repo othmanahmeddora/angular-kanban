@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BoardService } from '../services/board';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,8 @@ export class AppSidebar {
   private boardService = inject(BoardService);
   private router = inject(Router);
 
+  boardSelected = output<number>();
+
   get boards() {
     return this.boardService.getBoards();
   }
@@ -22,6 +24,7 @@ export class AppSidebar {
 
   selectBoard(index: number) {
     this.activeIndex = index;
+    this.boardSelected.emit(index);
     this.router.navigate(['/board', index]);
   }
 
