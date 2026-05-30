@@ -1,15 +1,17 @@
 <main class="bg-grey-lighter dark:bg-dark h-full w-full overflow-auto">
+  <!-- IF THERE IS NO BOARDS -->
   @if (!board && boardService.getBoards().length === 0) {
     <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
       <p class="text-[1.25rem] text-grey">
         No boards yet. Create one in the sidebar to get started.
       </p>
     </section>
-  } @else if (board && board.columns.length > 0) {
+  }
+  <!--IF BOARDS EXISTS  -->
+  @else if (board && board.columns.length > 0) {
     <section class="p-[2rem] flex items-start gap-[1.5rem] h-full">
       @for (column of board.columns; track column.name) {
         <section class="w-[17.5rem] shrink-0">
-          <!-- Column Header -->
           <h2
             class="text-grey text-[.75rem] tracking-[.4em] mb-[1.5rem] uppercase flex items-center gap-[.75rem]"
           >
@@ -20,7 +22,6 @@
             {{ column.name }} ({{ column.tasks.length }})
           </h2>
 
-          <!-- Drop List -->
           <section
             cdkDropList
             [id]="column.name"
@@ -57,7 +58,7 @@
         </section>
       }
 
-      <!-- Add New Column -->
+      <!-- ADD NEW COLUMN -->
       <section
         (click)="handleColumnFormOpen()"
         class="w-[17.5rem] shrink-0 mt-[2.5rem] flex items-center justify-center bg-grey-light/50 dark:bg-dark-light/20 rounded-[.5rem] h-[80vh] cursor-pointer group"
@@ -65,7 +66,9 @@
         <p class="text-grey text-[1.2rem] font-[500] group-hover:text-primary">+ New Column</p>
       </section>
     </section>
-  } @else {
+  }
+  <!-- IF THERE IS BOARDS WITHOUT COLUMNS -->
+  @else {
     <section class="flex flex-col gap-[1rem] items-center justify-center h-full">
       <p class="text-[1.25rem] text-grey">
         This board is empty. Create a new column to get started.
@@ -79,14 +82,13 @@
     </section>
   }
 
-  <!-- ==================== TASK VIEW MODAL ==================== -->
+  <!-- TASK VIEW MODAL -->
   @if (selectedTask) {
     <section (click)="closeTask()" class="fixed inset-0 z-10 bg-black/40 cursor-pointer"></section>
     <section
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1.25rem]"
       (click)="$event.stopPropagation()"
     >
-      <!-- Title + menu -->
       <section class="flex items-center justify-between gap-[1rem]">
         <h2 class="text-black dark:text-white text-[1.1rem] font-[500]">
           {{ selectedTask.title }}
@@ -122,12 +124,10 @@
         </section>
       </section>
 
-      <!-- Description -->
       @if (selectedTask.description) {
         <p class="text-grey text-[.85rem] leading-relaxed">{{ selectedTask.description }}</p>
       }
 
-      <!-- Subtasks -->
       <section class="flex flex-col gap-[.75rem]">
         <p class="text-grey text-[.75rem] font-[500]">
           Subtasks ({{ selectedTask.subtasks | completedSubtasks }} of
@@ -154,7 +154,6 @@
         }
       </section>
 
-      <!-- Status -->
       <section class="flex flex-col gap-[.5rem]">
         <p class="text-grey text-[.75rem] font-[500]">Current Status</p>
         <section
@@ -166,7 +165,7 @@
     </section>
   }
 
-  <!-- ==================== ADD COLUMN MODAL ==================== -->
+  <!-- ADD COLUMN MODAL -->
   @if (isColumnFormOpen) {
     <section
       (click)="handleColumnFormClose()"
@@ -206,7 +205,7 @@
     </section>
   }
 
-  <!-- ==================== ADD TASK MODAL ==================== -->
+  <!-- ADD TASK MODAL -->
   @if (boardService.isTaskFormOpen()) {
     <section
       (click)="handleTaskFormClose()"
@@ -295,7 +294,7 @@
     </section>
   }
 
-  <!-- ==================== EDIT TASK MODAL ==================== -->
+  <!-- EDIT TASK MODAL -->
   @if (boardService.isEditTaskOpen()) {
     <section
       (click)="boardService.closeEditTask()"
@@ -381,7 +380,7 @@
     </section>
   }
 
-  <!-- ==================== DELETE TASK MODAL ==================== -->
+  <!-- DELETE TASK MODAL -->
   @if (boardService.isDeleteTaskOpen()) {
     <section
       (click)="boardService.closeDeleteTask()"

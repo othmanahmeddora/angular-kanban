@@ -9,12 +9,13 @@ import {
   transferArrayItem,
   CdkDropList,
   CdkDrag,
+  CdkDragPlaceholder,
 } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-main',
   host: { class: 'block flex-1 overflow-auto' },
-  imports: [CompletedSubtasksPipe, FormsModule, CdkDropList, CdkDrag],
+  imports: [CompletedSubtasksPipe, FormsModule, CdkDropList, CdkDrag, CdkDragPlaceholder],
   templateUrl: './app-main.html',
   styleUrl: './app-main.css',
 })
@@ -37,6 +38,15 @@ export class AppMain implements OnInit {
   isColumnFormSubmitted = false;
   isTaskFormSubmitted = false;
   isEditTaskFormSubmitted = false;
+
+  selectedTaskIndex = -1;
+  selectedTaskColumn = '';
+  isTaskMenuOpen = false;
+
+  editTaskTitle = '';
+  editTaskDescription = '';
+  editTaskStatus = '';
+  editTaskSubtasks: { title: string; isCompleted: boolean }[] = [];
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -110,15 +120,6 @@ export class AppMain implements OnInit {
     this.isTaskFormSubmitted = false;
     this.handleTaskFormClose();
   }
-
-  selectedTaskIndex = -1;
-  selectedTaskColumn = '';
-  isTaskMenuOpen = false;
-
-  editTaskTitle = '';
-  editTaskDescription = '';
-  editTaskStatus = '';
-  editTaskSubtasks: { title: string; isCompleted: boolean }[] = [];
 
   openTask(task: any, columnName: string, taskIndex: number) {
     this.selectedTask = task;

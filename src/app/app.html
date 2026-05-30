@@ -7,7 +7,7 @@
   ></app-header>
 
   <section class="flex flex-1 overflow-hidden relative">
-    <!-- desktop sidebar -->
+    <!-- DESKTOP SIDEBAR -->
     @if (isSidebarVisible) {
       <app-sidebar
         class="hidden md:block"
@@ -16,7 +16,7 @@
       ></app-sidebar>
     }
 
-    <!-- mobile sidebar overlay -->
+    <!-- MOBILE SIDEBAR OVERLAY -->
     @if (isMobileSidebarOpen) {
       <section
         (click)="toggleMobileSidebar()"
@@ -34,7 +34,7 @@
 
     <router-outlet></router-outlet>
 
-    <!-- show sidebar button desktop only -->
+    <!-- SHOW SIDEBAR BUTTON -->
     @if (!isSidebarVisible) {
       <button
         (click)="toggleSidebar()"

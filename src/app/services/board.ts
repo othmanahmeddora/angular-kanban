@@ -9,8 +9,13 @@ export class BoardService {
   private readonly STORAGE_KEY = 'kanban-boards';
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
-
   private _boards = signal<any[]>([]);
+
+  isTaskFormOpen = signal(false);
+  isEditBoardOpen = signal(false);
+  isDeleteBoardOpen = signal(false);
+  isEditTaskOpen = signal(false);
+  isDeleteTaskOpen = signal(false);
 
   constructor() {
     if (this.isBrowser) {
@@ -64,7 +69,6 @@ export class BoardService {
     this.save();
   }
 
-  isTaskFormOpen = signal(false);
   openTaskForm() {
     this.isTaskFormOpen.set(true);
   }
@@ -109,11 +113,6 @@ export class BoardService {
     });
     this.save();
   }
-
-  isEditBoardOpen = signal(false);
-  isDeleteBoardOpen = signal(false);
-  isEditTaskOpen = signal(false);
-  isDeleteTaskOpen = signal(false);
 
   openEditBoard() {
     this.isEditBoardOpen.set(true);

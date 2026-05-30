@@ -1,6 +1,7 @@
 <aside
   class="bg-white dark:bg-dark-mid w-full h-full border-r border-r-grey-light dark:border-r-dark-light flex flex-col justify-between"
 >
+  <!-- ALL BOARDS -->
   <section class="pr-[2rem]">
     <p class="pl-[2rem] text-grey text-[.75rem] tracking-[.4em] py-[1rem]">
       All Boards ({{ boards.length }})
@@ -28,6 +29,7 @@
     </button>
   </section>
 
+  <!-- THEME TOGGLE AND HIDE SIDEBAR -->
   <section class="px-[2rem]">
     <section
       class="flex items-center justify-center gap-[1rem] bg-grey-lighter dark:bg-dark py-[.75rem] rounded-[.325rem]"
@@ -50,6 +52,7 @@
     </button>
   </section>
 
+  <!-- CREATE NEW BOARD MODAL -->
   @if (isClicked) {
     <section
       (click)="handleBoardFormClose()"

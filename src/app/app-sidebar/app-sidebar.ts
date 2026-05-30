@@ -15,6 +15,16 @@ export class AppSidebar implements OnInit {
   private boardService = inject(BoardService);
   private router = inject(Router);
 
+  boardSelected = output<number>();
+  hideSidebar = output<void>();
+
+  activeIndex = 0;
+  isClicked = false;
+  newBoardName = '';
+  newBoardColumns: string[] = ['Todo', 'Doing', 'Done'];
+  isBoardFormSubmitted = false;
+  isDark = false;
+
   ngOnInit() {
     this.syncIndexFromUrl(this.router.url);
 
@@ -28,28 +38,15 @@ export class AppSidebar implements OnInit {
     if (match) this.activeIndex = Number(match[1]);
   }
 
-  boardSelected = output<number>();
-  hideSidebar = output<void>();
-
-  onHideSidebar() {
-    this.hideSidebar.emit();
-  }
-
   get boards() {
     return this.boardService.getBoards();
   }
-
-  activeIndex = 0;
 
   selectBoard(index: number) {
     this.activeIndex = index;
     this.boardSelected.emit(index);
     this.router.navigate(['/board', index]);
   }
-
-  isClicked = false;
-  newBoardName = '';
-  newBoardColumns: string[] = ['Todo', 'Doing', 'Done'];
 
   handleBoardFormOpen() {
     this.isClicked = true;
@@ -67,8 +64,6 @@ export class AppSidebar implements OnInit {
     this.newBoardColumns.splice(index, 1);
   }
 
-  isBoardFormSubmitted = false;
-
   submitBoard() {
     this.isBoardFormSubmitted = true;
     if (!this.newBoardName.trim()) return;
@@ -79,9 +74,12 @@ export class AppSidebar implements OnInit {
     this.selectBoard(newIndex);
   }
 
-  isDark = false;
   toggleTheme() {
     this.isDark = !this.isDark;
     document.documentElement.classList.toggle('dark', this.isDark);
+  }
+
+  onHideSidebar() {
+    this.hideSidebar.emit();
   }
 }
