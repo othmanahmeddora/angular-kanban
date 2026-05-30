@@ -15,6 +15,11 @@ export class AppSidebar {
   private router = inject(Router);
 
   boardSelected = output<number>();
+  hideSidebar = output<void>();
+
+  onHideSidebar() {
+    this.hideSidebar.emit();
+  }
 
   get boards() {
     return this.boardService.getBoards();
@@ -56,7 +61,7 @@ export class AppSidebar {
     this.selectBoard(newIndex);
   }
 
-  isDark = true;
+  isDark = false;
   toggleTheme() {
     this.isDark = !this.isDark;
     document.documentElement.classList.toggle('dark', this.isDark);

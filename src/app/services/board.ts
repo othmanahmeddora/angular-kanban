@@ -139,4 +139,12 @@ export class BoardService {
   closeDeleteTask() {
     this.isDeleteTaskOpen.set(false);
   }
+
+  saveBoard(boardIndex: number, board: any) {
+    this._boards.update((boards) => {
+      boards[boardIndex] = board;
+      return [...boards];
+    });
+    this.save();
+  }
 }

@@ -13,12 +13,23 @@ import { BoardService } from './services/board';
 export class App {
   private boardService = inject(BoardService);
 
+  isSidebarVisible = true;
+  isMobileSidebarOpen = false;
   activeBoardIndex = 0;
+
   get activeBoardName() {
     return this.boardService.getBoardByIndex(this.activeBoardIndex)?.name ?? '';
   }
 
   onBoardSelected(index: number) {
     this.activeBoardIndex = index;
+    this.isMobileSidebarOpen = false;
+  }
+
+  toggleSidebar() {
+    this.isSidebarVisible = !this.isSidebarVisible;
+  }
+  toggleMobileSidebar() {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
   }
 }

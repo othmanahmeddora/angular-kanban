@@ -3,11 +3,18 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CompletedSubtasksPipe } from '../pipes/completed-subtasks-pipe';
 import { FormsModule } from '@angular/forms';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+  CdkDropList,
+  CdkDrag,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-main',
   host: { class: 'block flex-1 overflow-auto' },
-  imports: [CompletedSubtasksPipe, FormsModule],
+  imports: [CompletedSubtasksPipe, FormsModule, CdkDropList, CdkDrag],
   templateUrl: './app-main.html',
   styleUrl: './app-main.css',
 })
@@ -141,5 +148,27 @@ export class AppMain implements OnInit {
     this.board = this.boardService.getBoardByIndex(this.boardIndex);
     this.boardService.closeDeleteTask();
     this.closeTask();
+  }
+
+  dropTask(event: CdkDragDrop<any[]>, boardIndex: number) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+
+      const task = event.container.data[event.currentIndex];
+      task.status = event.container.id;
+    }
+
+    this.boardService.saveBoard(this.boardIndex, this.board);
+  }
+
+  getColumnIds(): string[] {
+    return this.board?.columns.map((col: any) => col.name) ?? [];
   }
 }

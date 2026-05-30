@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { BoardService } from '../services/board';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,11 +16,17 @@ export class AppHeader {
 
   @Input() boardIndex = 0;
   @Input() boardName = '';
+  @Input() isMobileSidebarOpen = false;
+
+  toggleMobileSidebar = output<void>();
 
   isMenuOpen = false;
-
   editBoardName = '';
   editBoardColumns: string[] = [];
+
+  onToggleMobileSidebar() {
+    this.toggleMobileSidebar.emit();
+  }
 
   openEditBoard() {
     const board = this.boardService.getBoardByIndex(this.boardIndex);

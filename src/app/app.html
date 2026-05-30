@@ -1,7 +1,47 @@
-<main class="h-screen flex flex-col">
-  <app-header [boardIndex]="activeBoardIndex" [boardName]="activeBoardName"></app-header>
-  <section class="flex flex-1 overflow-hidden">
-    <app-sidebar (boardSelected)="onBoardSelected($event)"></app-sidebar>
+<main class="h-screen flex flex-col overflow-hidden">
+  <app-header
+    [boardIndex]="activeBoardIndex"
+    [boardName]="activeBoardName"
+    [isMobileSidebarOpen]="isMobileSidebarOpen"
+    (toggleMobileSidebar)="toggleMobileSidebar()"
+  ></app-header>
+
+  <section class="flex flex-1 overflow-hidden relative">
+    <!-- desktop sidebar -->
+    @if (isSidebarVisible) {
+      <app-sidebar
+        class="hidden md:block"
+        (boardSelected)="onBoardSelected($event)"
+        (hideSidebar)="toggleSidebar()"
+      ></app-sidebar>
+    }
+
+    <!-- mobile sidebar overlay -->
+    @if (isMobileSidebarOpen) {
+      <section
+        (click)="toggleMobileSidebar()"
+        class="fixed inset-0 z-30 bg-black/40 md:hidden"
+      ></section>
+      <section
+        class="fixed top-[4rem] left-1/2 -translate-x-1/2 z-40 w-[16rem] md:hidden rounded-[.5rem] overflow-hidden shadow-xl"
+      >
+        <app-sidebar
+          (boardSelected)="onBoardSelected($event)"
+          (hideSidebar)="toggleMobileSidebar()"
+        ></app-sidebar>
+      </section>
+    }
+
     <router-outlet></router-outlet>
+
+    <!-- show sidebar button desktop only -->
+    @if (!isSidebarVisible) {
+      <button
+        (click)="toggleSidebar()"
+        class="hidden md:flex absolute bottom-[2rem] left-0 bg-primary px-[1.5rem] py-[1rem] rounded-r-full cursor-pointer"
+      >
+        <img src="/images/icon-show-sidebar.svg" alt="Show Sidebar" />
+      </button>
+    }
   </section>
 </main>

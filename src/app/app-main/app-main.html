@@ -7,19 +7,35 @@
             {{ column.name }} ({{ column.tasks.length }})
           </h2>
 
-          @for (task of column.tasks; track task.title; let i = $index) {
-            <section
-              (click)="openTask(task, column.name, i)"
-              class="bg-white dark:bg-dark-mid p-[1.5rem] rounded-[.5rem] mb-[1rem] shadow-sm cursor-pointer"
-            >
-              <h3 class="text-black dark:text-white text-[.9rem] font-[500] mb-[.5rem]">
-                {{ task.title }}
-              </h3>
-              <p class="text-grey text-[.75rem]">
-                {{ task.subtasks | completedSubtasks }} of {{ task.subtasks.length }} subtasks
-              </p>
-            </section>
-          }
+          <section
+            cdkDropList
+            [id]="column.name"
+            [cdkDropListData]="column.tasks"
+            [cdkDropListConnectedTo]="getColumnIds()"
+            (cdkDropListDropped)="dropTask($event, boardIndex)"
+            class="min-h-[4rem]"
+          >
+            @for (task of column.tasks; track task.title; let i = $index) {
+              <section
+                cdkDrag
+                (click)="openTask(task, column.name, i)"
+                class="bg-white dark:bg-dark-mid p-[1.5rem] rounded-[.5rem] mb-[1rem] shadow-sm cursor-pointer"
+              >
+                <h3 class="text-black dark:text-white text-[.9rem] font-[500] mb-[.5rem]">
+                  {{ task.title }}
+                </h3>
+                <p class="text-grey text-[.75rem]">
+                  {{ task.subtasks | completedSubtasks }} of {{ task.subtasks.length }} subtasks
+                </p>
+
+                <!-- drag placeholder -->
+                <section
+                  *cdkDragPlaceholder
+                  class="bg-primary/20 rounded-[.5rem] h-[5rem] mb-[1rem]"
+                ></section>
+              </section>
+            }
+          </section>
         </section>
       }
 
@@ -49,7 +65,7 @@
   @if (selectedTask) {
     <section (click)="closeTask()" class="fixed inset-0 z-10 bg-black/40 cursor-pointer"></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1.25rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
       (click)="$event.stopPropagation()"
     >
       <section class="flex items-center justify-between gap-[1rem]">
@@ -136,7 +152,7 @@
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
       (click)="$event.stopPropagation()"
     >
       <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Add New Column</h2>
@@ -168,7 +184,7 @@
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
       (click)="$event.stopPropagation()"
     >
       <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Add New Task</h2>
@@ -247,7 +263,7 @@
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
       (click)="$event.stopPropagation()"
     >
       <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Edit Task</h2>
@@ -325,7 +341,7 @@
       class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
     ></section>
     <section
-      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
       (click)="$event.stopPropagation()"
     >
       <h2 class="text-[1.2rem] font-[600] text-red">Delete this task?</h2>

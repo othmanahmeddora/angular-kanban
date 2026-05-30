@@ -1,33 +1,52 @@
 <header class="bg-white dark:bg-dark-mid flex">
+  <!-- desktop logo -->
   <section
-    class="w-[16rem] shrink-0 border-r border-r-grey-light dark:border-r-dark-light px-[2rem] py-[1rem] flex items-center"
+    class="hidden md:flex w-[16rem] shrink-0 border-r border-r-grey-light dark:border-r-dark-light px-[2rem] py-[1rem] items-center"
   >
     <img src="./images/logo-light.svg" alt="Kanban Logo" class="hidden dark:block" />
     <img src="./images/logo-dark.svg" alt="Kanban Logo" class="block dark:hidden" />
   </section>
 
   <section
-    class="flex-1 px-[2rem] py-[1rem] flex items-center justify-between text-black dark:text-white border-b border-b-grey-light dark:border-b-dark-light"
+    class="flex-1 px-[1rem] md:px-[2rem] py-[1rem] flex items-center justify-between text-black dark:text-white border-b border-b-grey-light dark:border-b-dark-light"
   >
-    <h2 class="text-[1.5rem] font-[500]">{{ boardName }}</h2>
+    <!-- mobile: logo + board name + chevron -->
+    <button
+      (click)="onToggleMobileSidebar()"
+      class="flex items-center gap-[.5rem] md:hidden cursor-pointer"
+    >
+      <img src="./images/logo-mobile.svg" alt="Kanban Logo" class="h-[1.5rem]" />
+      <h2 class="text-[1.1rem] font-[600] text-black dark:text-white">{{ boardName }}</h2>
+      <img
+        src="/images/icon-chevron-down.svg"
+        alt="toggle"
+        class="w-[.6rem] transition-transform duration-200"
+        [class.rotate-180]="isMobileSidebarOpen"
+      />
+    </button>
 
-    <section class="flex items-center gap-[2rem]">
+    <!-- desktop: board name -->
+    <h2 class="hidden md:block text-[1.5rem] font-[500]">{{ boardName }}</h2>
+
+    <section class="flex items-center gap-[1rem] md:gap-[2rem]">
+      <!-- Add Task button: icon on mobile, full on desktop -->
       <button
         type="button"
         (click)="boardService.openTaskForm()"
-        class="px-[1.3rem] py-[.7rem] rounded-full text-[.8rem] bg-primary text-white cursor-pointer"
+        class="flex items-center justify-center w-[2.5rem] h-[2.5rem] md:w-auto md:h-auto md:px-[1.3rem] md:py-[.7rem] rounded-full bg-primary text-white cursor-pointer"
       >
-        + Add New Task
+        <span class="hidden md:inline text-[.8rem] font-[500]">+ Add New Task</span>
+        <span class="md:hidden text-[1.5rem] leading-[0] pb-[.1rem]">+</span>
       </button>
 
+      <!-- three dots -->
       <section class="relative">
         <img
           src="./images/icon-vertical-ellipsis.svg"
-          alt="three dots menu"
+          alt="menu"
           class="cursor-pointer"
           (click)="isMenuOpen = !isMenuOpen"
         />
-
         @if (isMenuOpen) {
           <section
             class="absolute top-[2rem] right-0 flex flex-col items-start gap-[1rem] bg-white dark:bg-dark-mid w-[10rem] p-[1rem] rounded-[.5rem] shadow-md z-10"
@@ -49,27 +68,25 @@
   </section>
 </header>
 
-<!-- EDIT BOARD MODAL -->
+<!-- modals -->
 @if (boardService.isEditBoardOpen()) {
   <section
     (click)="boardService.closeEditBoard()"
     class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
   ></section>
   <section
-    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] max-h-[90vh] overflow-y-auto p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
     (click)="$event.stopPropagation()"
   >
     <h2 class="text-[1.2rem] font-[600] text-black dark:text-white">Edit Board</h2>
-
     <label class="flex flex-col gap-[.5rem] text-[.8rem] text-grey font-[500]">
       Name
       <input
         type="text"
         [(ngModel)]="editBoardName"
-        class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+        class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] outline-none focus:border-primary"
       />
     </label>
-
     <section class="flex flex-col gap-[.5rem]">
       <p class="text-[.8rem] text-grey font-[500]">Columns</p>
       @for (col of editBoardColumns; track $index; let i = $index) {
@@ -77,18 +94,12 @@
           <input
             type="text"
             [(ngModel)]="editBoardColumns[i]"
-            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
+            class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] outline-none focus:border-primary"
           />
-          <img
-            src="/images/icon-cross.svg"
-            alt="remove"
-            class="cursor-pointer"
-            (click)="removeEditColumn(i)"
-          />
+          <img src="/images/icon-cross.svg" class="cursor-pointer" (click)="removeEditColumn(i)" />
         </section>
       }
     </section>
-
     <button
       type="button"
       (click)="addEditColumn()"
@@ -96,7 +107,6 @@
     >
       + Add New Column
     </button>
-
     <button
       type="button"
       (click)="submitEditBoard()"
@@ -107,14 +117,13 @@
   </section>
 }
 
-<!-- DELETE BOARD MODAL -->
 @if (boardService.isDeleteBoardOpen()) {
   <section
     (click)="boardService.closeDeleteBoard()"
     class="fixed inset-0 z-10 bg-black/40 cursor-pointer"
   ></section>
   <section
-    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
+    class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] md:w-[30rem] p-[2rem] bg-white dark:bg-dark-mid rounded-[.5rem] z-20 flex flex-col gap-[1rem]"
     (click)="$event.stopPropagation()"
   >
     <h2 class="text-[1.2rem] font-[600] text-red">Delete this board?</h2>
