@@ -8,9 +8,9 @@
     </section>
   }
   <!--IF BOARDS EXISTS  -->
-  @else if (board && board.columns.length > 0) {
+  @else if (board() && board().columns.length > 0) {
     <section class="p-[2rem] flex items-start gap-[1.5rem] h-full">
-      @for (column of board.columns; track column.name) {
+      @for (column of board().columns; track column.name) {
         <section class="w-[17.5rem] shrink-0">
           <h2
             class="text-grey text-[.75rem] tracking-[.4em] mb-[1.5rem] uppercase flex items-center gap-[.75rem]"
@@ -27,7 +27,7 @@
             [id]="column.name"
             [cdkDropListData]="column.tasks"
             [cdkDropListConnectedTo]="getColumnIds()"
-            (cdkDropListDropped)="dropTask($event, boardIndex)"
+            (cdkDropListDropped)="dropTask($event)"
             class="min-h-[4rem]"
           >
             @for (task of column.tasks; track task.title; let i = $index) {
@@ -133,14 +133,14 @@
           Subtasks ({{ selectedTask.subtasks | completedSubtasks }} of
           {{ selectedTask.subtasks.length }})
         </p>
-        @for (subtask of selectedTask.subtasks; track subtask.title) {
+        @for (subtask of selectedTask.subtasks; track subtask.title; let si = $index) {
           <section
             class="flex items-center gap-[1rem] bg-grey-lighter dark:bg-dark p-[.75rem] rounded-[.25rem]"
           >
             <input
               type="checkbox"
               [checked]="subtask.isCompleted"
-              (change)="toggleSubtask(subtask)"
+              (change)="toggleSubtask(si)"
               class="accent-primary w-[1rem] h-[1rem] cursor-pointer"
             />
             <p
@@ -278,7 +278,7 @@
           [(ngModel)]="newTaskStatus"
           class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
         >
-          @for (column of board.columns; track column.name) {
+          @for (column of board().columns; track column.name) {
             <option [value]="column.name">{{ column.name }}</option>
           }
         </select>
@@ -364,7 +364,7 @@
           [(ngModel)]="editTaskStatus"
           class="w-full text-[1rem] border border-slate-200 dark:border-dark-light dark:bg-dark-mid dark:text-white px-[.75rem] py-[.5rem] rounded-[.25rem] font-[400] outline-none focus:border-primary"
         >
-          @for (column of board.columns; track column.name) {
+          @for (column of board().columns; track column.name) {
             <option [value]="column.name">{{ column.name }}</option>
           }
         </select>

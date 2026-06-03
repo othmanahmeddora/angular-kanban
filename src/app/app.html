@@ -1,14 +1,13 @@
 <main class="h-screen flex flex-col overflow-hidden">
   <app-header
-    [boardIndex]="activeBoardIndex"
-    [boardName]="activeBoardName"
-    [isMobileSidebarOpen]="isMobileSidebarOpen"
+    [boardIndex]="activeBoardIndex()"
+    [boardName]="activeBoardName()"
+    [isMobileSidebarOpen]="isMobileSidebarOpen()"
     (toggleMobileSidebar)="toggleMobileSidebar()"
   ></app-header>
 
   <section class="flex flex-1 overflow-hidden relative">
-    <!-- DESKTOP SIDEBAR -->
-    @if (isSidebarVisible) {
+    @if (isSidebarVisible()) {
       <app-sidebar
         class="hidden md:block"
         (boardSelected)="onBoardSelected($event)"
@@ -16,8 +15,7 @@
       ></app-sidebar>
     }
 
-    <!-- MOBILE SIDEBAR OVERLAY -->
-    @if (isMobileSidebarOpen) {
+    @if (isMobileSidebarOpen()) {
       <section
         (click)="toggleMobileSidebar()"
         class="fixed inset-0 z-30 bg-black/40 md:hidden"
@@ -34,8 +32,7 @@
 
     <router-outlet></router-outlet>
 
-    <!-- SHOW SIDEBAR BUTTON -->
-    @if (!isSidebarVisible) {
+    @if (!isSidebarVisible()) {
       <button
         (click)="toggleSidebar()"
         class="hidden md:flex absolute bottom-[2rem] left-0 bg-primary px-[1.5rem] py-[1rem] rounded-r-full cursor-pointer"

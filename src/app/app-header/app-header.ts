@@ -23,6 +23,7 @@ export class AppHeader {
   isMenuOpen = false;
   editBoardName = '';
   editBoardColumns: string[] = [];
+  isEditBoardFormSubmitted = false;
 
   onToggleMobileSidebar() {
     this.toggleMobileSidebar.emit();
@@ -49,16 +50,17 @@ export class AppHeader {
   }
 
   submitEditBoard() {
+    this.isEditBoardFormSubmitted = true;
     if (!this.editBoardName.trim()) return;
     const columns = this.editBoardColumns.filter((c) => c.trim()).map((c) => ({ name: c.trim() }));
     this.boardService.editBoard(this.boardIndex, this.editBoardName.trim(), columns);
+    this.isEditBoardFormSubmitted = false;
     this.boardService.closeEditBoard();
   }
 
   confirmDeleteBoard() {
     this.boardService.deleteBoard(this.boardIndex);
     this.boardService.closeDeleteBoard();
-
     const remaining = this.boardService.getBoards().length;
     if (remaining === 0) {
       this.router.navigate(['/']);

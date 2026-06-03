@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { AppHeader } from './app-header/app-header';
 import { AppSidebar } from './app-sidebar/app-sidebar';
 import { BoardService } from './services/board';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,24 +13,33 @@ import { BoardService } from './services/board';
 })
 export class App {
   private boardService = inject(BoardService);
+  private router = inject(Router);
 
-  isSidebarVisible = true;
-  isMobileSidebarOpen = false;
-  activeBoardIndex = 0;
+  activeBoardIndex = signal(0);
+  isSidebarVisible = signal(true);
+  isMobileSidebarOpen = signal(false);
 
-  get activeBoardName() {
-    return this.boardService.getBoardByIndex(this.activeBoardIndex)?.name ?? '';
+  activeBoardName = computed(
+    () => this.boardService.getBoardByIndex(this.activeBoardIndex())?.name ?? '',
+  );
+
+  constructor() {
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: any) => {
+      const match = (e.urlAfterRedirects as string).match(/\/board\/(\d+)/);
+      if (match) this.activeBoardIndex.set(Number(match[1]));
+    });
   }
 
   onBoardSelected(index: number) {
-    this.activeBoardIndex = index;
-    this.isMobileSidebarOpen = false;
+    this.activeBoardIndex.set(index);
+    this.isMobileSidebarOpen.set(false);
   }
 
   toggleSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
+    this.isSidebarVisible.update((v) => !v);
   }
+
   toggleMobileSidebar() {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+    this.isMobileSidebarOpen.update((v) => !v);
   }
 }

@@ -11,12 +11,6 @@ export class BoardService {
   private isBrowser = isPlatformBrowser(this.platformId);
   private _boards = signal<any[]>([]);
 
-  isTaskFormOpen = signal(false);
-  isEditBoardOpen = signal(false);
-  isDeleteBoardOpen = signal(false);
-  isEditTaskOpen = signal(false);
-  isDeleteTaskOpen = signal(false);
-
   constructor() {
     if (this.isBrowser) {
       const stored = localStorage.getItem(this.STORAGE_KEY);
@@ -45,7 +39,10 @@ export class BoardService {
       ...boards,
       {
         name,
-        columns: columns.map((col) => ({ name: col, tasks: [] })),
+        columns: columns.map((col, i) => ({
+          name: col,
+          tasks: [],
+        })),
       },
     ]);
     this.save();
@@ -53,41 +50,55 @@ export class BoardService {
   }
 
   addColumn(boardIndex: number, name: string) {
-    this._boards.update((boards) => {
-      boards[boardIndex].columns.push({ name, tasks: [] });
-      return [...boards];
-    });
+    this._boards.update((boards) =>
+      boards.map((board, i) =>
+        i === boardIndex
+          ? {
+              ...board,
+              columns: [
+                ...board.columns,
+                {
+                  name,
+                  tasks: [],
+                },
+              ],
+            }
+          : board,
+      ),
+    );
     this.save();
   }
 
   addTask(boardIndex: number, columnName: string, task: any) {
-    this._boards.update((boards) => {
-      const column = boards[boardIndex].columns.find((col: any) => col.name === columnName);
-      if (column) column.tasks.push(task);
-      return [...boards];
-    });
+    this._boards.update((boards) =>
+      boards.map((board, i) =>
+        i === boardIndex
+          ? {
+              ...board,
+              columns: board.columns.map((col: any) =>
+                col.name === columnName ? { ...col, tasks: [...col.tasks, task] } : col,
+              ),
+            }
+          : board,
+      ),
+    );
     this.save();
   }
 
-  openTaskForm() {
-    this.isTaskFormOpen.set(true);
-  }
-  closeTaskForm() {
-    this.isTaskFormOpen.set(false);
-  }
-
   editBoard(boardIndex: number, name: string, columns: { name: string }[]) {
-    this._boards.update((boards) => {
-      const board = boards[boardIndex];
-      board.name = name;
-
-      board.columns = columns.map((col) => {
-        const existing = board.columns.find((c: any) => c.name === col.name);
-        return existing ?? { name: col.name, tasks: [] };
-      });
-
-      return [...boards];
-    });
+    this._boards.update((boards) =>
+      boards.map((board, i) => {
+        if (i !== boardIndex) return board;
+        return {
+          ...board,
+          name,
+          columns: columns.map((col) => {
+            const existing = board.columns.find((c: any) => c.name === col.name);
+            return existing ?? { name: col.name, tasks: [] };
+          }),
+        };
+      }),
+    );
     this.save();
   }
 
@@ -97,53 +108,124 @@ export class BoardService {
   }
 
   editTask(boardIndex: number, columnName: string, taskIndex: number, updatedTask: any) {
-    this._boards.update((boards) => {
-      const column = boards[boardIndex].columns.find((c: any) => c.name === columnName);
-      if (column) column.tasks[taskIndex] = updatedTask;
-      return [...boards];
-    });
+    this._boards.update((boards) =>
+      boards.map((board, i) =>
+        i === boardIndex
+          ? {
+              ...board,
+              columns: board.columns.map((col: any) =>
+                col.name === columnName
+                  ? {
+                      ...col,
+                      tasks: col.tasks.map((task: any, ti: number) =>
+                        ti === taskIndex ? updatedTask : task,
+                      ),
+                    }
+                  : col,
+              ),
+            }
+          : board,
+      ),
+    );
     this.save();
   }
 
   deleteTask(boardIndex: number, columnName: string, taskIndex: number) {
-    this._boards.update((boards) => {
-      const column = boards[boardIndex].columns.find((c: any) => c.name === columnName);
-      if (column) column.tasks.splice(taskIndex, 1);
-      return [...boards];
-    });
+    this._boards.update((boards) =>
+      boards.map((board, i) =>
+        i === boardIndex
+          ? {
+              ...board,
+              columns: board.columns.map((col: any) =>
+                col.name === columnName
+                  ? { ...col, tasks: col.tasks.filter((_: any, ti: number) => ti !== taskIndex) }
+                  : col,
+              ),
+            }
+          : board,
+      ),
+    );
     this.save();
+  }
+
+  toggleSubtask(boardIndex: number, columnName: string, taskIndex: number, subtaskIndex: number) {
+    this._boards.update((boards) =>
+      boards.map((board, i) =>
+        i === boardIndex
+          ? {
+              ...board,
+              columns: board.columns.map((col: any) =>
+                col.name === columnName
+                  ? {
+                      ...col,
+                      tasks: col.tasks.map((task: any, ti: number) =>
+                        ti === taskIndex
+                          ? {
+                              ...task,
+                              subtasks: task.subtasks.map((s: any, si: number) =>
+                                si === subtaskIndex ? { ...s, isCompleted: !s.isCompleted } : s,
+                              ),
+                            }
+                          : task,
+                      ),
+                    }
+                  : col,
+              ),
+            }
+          : board,
+      ),
+    );
+    this.save();
+  }
+
+  saveBoard(boardIndex: number, board: any) {
+    this._boards.update((boards) => boards.map((b, i) => (i === boardIndex ? board : b)));
+    this.save();
+  }
+
+  isTaskFormOpen = signal(false);
+  isEditBoardOpen = signal(false);
+  isDeleteBoardOpen = signal(false);
+  isEditTaskOpen = signal(false);
+  isDeleteTaskOpen = signal(false);
+
+  openTaskForm() {
+    this.isTaskFormOpen.set(true);
+  }
+
+  closeTaskForm() {
+    this.isTaskFormOpen.set(false);
   }
 
   openEditBoard() {
     this.isEditBoardOpen.set(true);
   }
+
   closeEditBoard() {
     this.isEditBoardOpen.set(false);
   }
+
   openDeleteBoard() {
     this.isDeleteBoardOpen.set(true);
   }
+
   closeDeleteBoard() {
     this.isDeleteBoardOpen.set(false);
   }
+
   openEditTask() {
     this.isEditTaskOpen.set(true);
   }
+
   closeEditTask() {
     this.isEditTaskOpen.set(false);
   }
+
   openDeleteTask() {
     this.isDeleteTaskOpen.set(true);
   }
+
   closeDeleteTask() {
     this.isDeleteTaskOpen.set(false);
-  }
-
-  saveBoard(boardIndex: number, board: any) {
-    this._boards.update((boards) => {
-      boards[boardIndex] = board;
-      return [...boards];
-    });
-    this.save();
   }
 }

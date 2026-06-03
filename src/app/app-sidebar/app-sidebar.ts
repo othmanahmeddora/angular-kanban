@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, output } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { BoardService } from '../services/board';
 import { FormsModule } from '@angular/forms';
 import { filter } from 'rxjs';
+import { output } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,16 +19,18 @@ export class AppSidebar implements OnInit {
   boardSelected = output<number>();
   hideSidebar = output<void>();
 
+  boards = computed(() => this.boardService.getBoards());
+
   activeIndex = 0;
   isClicked = false;
-  newBoardName = '';
-  newBoardColumns: string[] = ['Todo', 'Doing', 'Done'];
-  isBoardFormSubmitted = false;
   isDark = false;
+
+  newBoardName = '';
+  newBoardColumns: string[] = [''];
+  isBoardFormSubmitted = false;
 
   ngOnInit() {
     this.syncIndexFromUrl(this.router.url);
-
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e: any) => this.syncIndexFromUrl(e.urlAfterRedirects));
@@ -36,10 +39,6 @@ export class AppSidebar implements OnInit {
   syncIndexFromUrl(url: string) {
     const match = url.match(/\/board\/(\d+)/);
     if (match) this.activeIndex = Number(match[1]);
-  }
-
-  get boards() {
-    return this.boardService.getBoards();
   }
 
   selectBoard(index: number) {
@@ -51,15 +50,18 @@ export class AppSidebar implements OnInit {
   handleBoardFormOpen() {
     this.isClicked = true;
   }
+
   handleBoardFormClose() {
     this.isClicked = false;
     this.newBoardName = '';
-    this.newBoardColumns = ['Todo', 'Doing', 'Done'];
+    this.newBoardColumns = [''];
+    this.isBoardFormSubmitted = false;
   }
 
   addColumn() {
     this.newBoardColumns.push('');
   }
+
   removeColumn(index: number) {
     this.newBoardColumns.splice(index, 1);
   }
@@ -69,17 +71,16 @@ export class AppSidebar implements OnInit {
     if (!this.newBoardName.trim()) return;
     const filtered = this.newBoardColumns.filter((col) => col.trim());
     const newIndex = this.boardService.addBoard(this.newBoardName.trim(), filtered);
-    this.isBoardFormSubmitted = false;
     this.handleBoardFormClose();
     this.selectBoard(newIndex);
+  }
+
+  onHideSidebar() {
+    this.hideSidebar.emit();
   }
 
   toggleTheme() {
     this.isDark = !this.isDark;
     document.documentElement.classList.toggle('dark', this.isDark);
-  }
-
-  onHideSidebar() {
-    this.hideSidebar.emit();
   }
 }
